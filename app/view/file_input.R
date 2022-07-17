@@ -2,7 +2,6 @@ box::use(
   shiny[moduleServer, NS, reactive, div, observeEvent, fileInput],
   magrittr[`%>%`],
   glue[glue],
-  openxlsx[...],
   shinycssloaders[withSpinner],
 )
 

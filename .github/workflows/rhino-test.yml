@@ -7,7 +7,7 @@ jobs:
     name: Run linters and tests
     runs-on: ubuntu-20.04
     env:
-      R_VERSION: '4.1.0'
+      R_VERSION: '4.1.3'
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repo
@@ -23,14 +23,10 @@ jobs:
           sudo apt-get install --yes
           libcurl4-openssl-dev
 
-      - name: Restore renv from cache
-        uses: actions/cache@v2
-        env:
-          CACHE_KEY: renv-${{ runner.arch }}-${{ runner.os }}-${{ env.R_VERSION }}
-        with:
-          path: renv/library
-          key: ${{ env.CACHE_KEY }}-${{ hashFiles('renv.lock') }}
-          restore-keys: ${{ env.CACHE_KEY }}-
+      - name: Install renv
+        shell: Rscript {0}
+        run: |
+          install.packages("renv")
 
       - name: Sync renv with lockfile
         shell: Rscript {0}
@@ -62,11 +58,3 @@ jobs:
         if: always()
         shell: Rscript {0}
         run: rhino::test_r()
-
-      - name: Run Cypress end-to-end tests
-        if: always()
-        uses: cypress-io/github-action@v2
-        with:
-          working-directory: .rhino/node # Created by earlier commands which use Node.js
-          start: yarn run-app
-          project: root/tests
