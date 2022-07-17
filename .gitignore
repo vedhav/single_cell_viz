@@ -1,0 +1,6 @@
+.DS_Store
+.RData
+.Rhistory
+.Rprofile
+app/static/css/app.min.css
+app/static/js/app.min.js
