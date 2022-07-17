@@ -4,3 +4,4 @@
 .Rprofile
 app/static/css/app.min.css
 app/static/js/app.min.js
+.Rproj.user

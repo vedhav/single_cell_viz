@@ -2,8 +2,12 @@ box::use(
   shiny[...],
   imola[...],
   bs4Dash[...],
+  waiter[...],
+  shinyjs[...],
 )
 box::use(
+  logic / config,
+  logic / data_manager,
   view / fetch_data,
   view / quality_check,
   view / filtering,
@@ -19,9 +23,7 @@ ui <- function(id) {
   ns <- NS(id)
   dashboardPage(
     title = "Single Cell RNA-Sequence Vizualization",
-    dark = FALSE,
-    fullscreen = TRUE,
-    scrollToTop = TRUE,
+    dark = NULL,
     header = dashboardHeader(
       title = dashboardBrand(
         title = "RNA-Seq Data Analysis",
@@ -46,7 +48,7 @@ ui <- function(id) {
         menuItem(
           "Fetch Data",
           tabName = "rna_seq_fetch_data",
-          icon = icon("cloud-download")
+          icon = icon("cloud-download-alt")
         ),
         menuItem(
           "Quality Check",
@@ -88,6 +90,8 @@ ui <- function(id) {
       )
     ),
     body = dashboardBody(
+      useShinyjs(),
+      useWaiter(),
       tabItems(
         fetch_data$ui(ns("fetch_data")),
         quality_check$ui(ns("rna_seq_qc")),
@@ -105,8 +109,10 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    fetch_data$server("fetch_data")
-    quality_check$server("rna_seq_qc")
+    config$init()
+    data_state <- data_manager$init("data_state")
+    fetch_data$server("fetch_data", data_state)
+    quality_check$server("rna_seq_qc", data_state)
     filtering$server("rna_seq_filter")
     normalizing$server("rna_seq_normalize")
     feature_selection$server("rna_seq_feature_selection")
