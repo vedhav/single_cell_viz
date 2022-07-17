@@ -3,7 +3,7 @@ box::use(
   testthat[...],
 )
 box::use(
-  app/view/fetch_data[...],
+  ../../app/view/fetch_data[...],
 )
 
 test_that("Fetch UI works fine", {
